@@ -27,3 +27,7 @@ This project is a financial control application where is possible to register an
 The Layout was developed by [Tiago Luchtenberg](https://www.instagram.com/tiagoluchtenberg/) and you can access it on [Figma](https://www.figma.com/).
 
 - [Link to acess](https://www.figma.com/file/T4bP5j6oIMBUo05F3Tj53b/GoFinances?node-id=0%3A1)
+
+---
+
+<p align="center">Made with 💜 by Davy de Souza</p>
