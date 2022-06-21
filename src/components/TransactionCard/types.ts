@@ -1,12 +1,7 @@
-export type CategoryType = {
-    name: string;
-    icon: string;
-}
-
 export type TransactionCardProps = {
     type: 'positive' | 'negative';
-    title: string;
+    name: string;
     amount: string;
-    category: CategoryType;
+    category: string;
     date: string;
 }

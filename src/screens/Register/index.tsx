@@ -10,19 +10,26 @@ import {
 } from "./styles";
 
 import * as Yup from "yup";
+import uuid from "react-native-uuid";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { CategorySelect } from "../CategorySelect";
 import { Button } from "../../components/Form/Button";
+import { InputForm } from "../../components/Form/InputForm";
 import { TransactionTypeButton } from "../../components/Form/TransactionTypeButton";
 import { CategorySelectButton } from "../../components/Form/CategorySelectButton";
-import { CategorySelect } from "../CategorySelect";
-import { InputForm } from "../../components/Form/InputForm";
-import { useForm } from "react-hook-form";
 
 interface FormData {
   name: string;
   amount: string;
 }
+
+type NavigationProps = {
+  navigate: (screen: string) => void;
+};
 
 const scheme = Yup.object().shape({
   name: Yup.string().required("Nome é obrigatório"),
@@ -32,10 +39,17 @@ const scheme = Yup.object().shape({
 });
 
 export function Register() {
-  const [transactionType, setTransactionType] = useState("");
+  const navigation = useNavigation<NavigationProps>();
+
   const [categoryModalOpen, setCategoryModalOpen] = useState(false);
+  const [transactionType, setTransactionType] = useState("");
+  const [category, setCategory] = useState({
+    key: "category",
+    name: "Categoria",
+  });
 
   const {
+    reset,
     control,
     handleSubmit,
     formState: { errors },
@@ -43,12 +57,7 @@ export function Register() {
     resolver: yupResolver(scheme),
   });
 
-  const [category, setCategory] = useState({
-    key: "category",
-    name: "Categoria",
-  });
-
-  function handleRegister(form: Partial<FormData>) {
+  async function handleRegister(form: Partial<FormData>) {
     if (!transactionType) {
       return Alert.alert("selecione o tipo da transação");
     }
@@ -57,16 +66,39 @@ export function Register() {
       return Alert.alert("selecione a categoria");
     }
 
-    const data = {
+    const newTransaction = {
+      id: String(uuid.v4()),
       name: form.name,
       amount: form.amount,
-      transactionType,
+      type: transactionType,
       category: category.key,
+      date: new Date(),
     };
-    console.log(data);
+
+    try {
+      const dataKey = "@gofinances:transactions";
+      const data = await AsyncStorage.getItem(dataKey);
+      const currentData = data ? JSON.parse(data) : [];
+
+      const dataFormatted = [...currentData, newTransaction];
+
+      await AsyncStorage.setItem(dataKey, JSON.stringify(dataFormatted));
+
+      reset();
+      setTransactionType("");
+      setCategory({
+        key: "category",
+        name: "Categoria",
+      });
+
+      navigation.navigate("Listagem");
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Não foi possível salvar");
+    }
   }
 
-  function handleTransactionTypeSelect(type: "up" | "down") {
+  function handleTransactionTypeSelect(type: "positive" | "negative") {
     setTransactionType(type);
   }
 
@@ -106,14 +138,14 @@ export function Register() {
               <TransactionTypeButton
                 type="up"
                 title="Income"
-                onPress={() => handleTransactionTypeSelect("up")}
-                isActive={transactionType === "up"}
+                onPress={() => handleTransactionTypeSelect("positive")}
+                isActive={transactionType === "positive"}
               />
               <TransactionTypeButton
                 type="down"
                 title="Outcome"
-                onPress={() => handleTransactionTypeSelect("down")}
-                isActive={transactionType === "down"}
+                onPress={() => handleTransactionTypeSelect("negative")}
+                isActive={transactionType === "negative"}
               />
             </TransactionsTypes>
             <CategorySelectButton
@@ -122,7 +154,11 @@ export function Register() {
             />
           </Fields>
 
-          <Button title="Enviar" onPress={handleSubmit(handleRegister)} />
+          <Button
+            title="Enviar"
+            activeOpacity={0.7}
+            onPress={handleSubmit(handleRegister)}
+          />
         </Form>
         <Modal visible={categoryModalOpen}>
           <CategorySelect
