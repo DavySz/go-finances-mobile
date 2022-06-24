@@ -27,8 +27,8 @@ This project is a financial control application where is possible to register an
 Clone the project and access the folder.
 
 ```bash
-$ git clone https://github.com/davysz/letmeask.git
-$ cd letmeask
+$ git clone https://github.com/davysz/go-finances-mobile.git
+$ cd go-finances-mobile
 ```
 
 Follow the steps below:
