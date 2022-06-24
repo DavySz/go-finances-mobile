@@ -22,6 +22,25 @@ This project is a financial control application where is possible to register an
 - [react-native-svg-transformer](https://www.npmjs.com/package/react-native-svg-transformer) for using SVGs images as a component
 - [styled-components](https://styled-components.com/) for using components as a low-level styling construct
 
+## 🚀 Getting started
+
+Clone the project and access the folder.
+
+```bash
+$ git clone https://github.com/davysz/letmeask.git
+$ cd letmeask
+```
+
+Follow the steps below:
+
+```bash
+# Install the dependencies
+$ yarn
+
+# Start the project
+$ yarn start
+```
+
 ## 🎨 Layout
 
 The Layout was developed by [Tiago Luchtenberg](https://www.instagram.com/tiagoluchtenberg/) and you can access it on [Figma](https://www.figma.com/).
