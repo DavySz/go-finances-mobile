@@ -41,6 +41,13 @@ $ yarn
 $ yarn start
 ```
 
+Add your Google auth credentials:
+
+```
+CLIENT_ID=
+REDIRECT_URI=
+```
+
 ## 🎨 Layout
 
 The Layout was developed by [Tiago Luchtenberg](https://www.instagram.com/tiagoluchtenberg/) and you can access it on [Figma](https://www.figma.com/).
