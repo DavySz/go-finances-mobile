@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import GoogleSvg from "../../assets/google.svg";
 import AppleSvg from "../../assets/apple.svg";
@@ -16,17 +16,33 @@ import {
 import { useAuth } from "../../hooks/auth";
 import { RFValue } from "react-native-responsive-fontsize";
 import { SignInSocialButton } from "../../components/SignInSocialButton";
-import { Alert } from "react-native";
+import { ActivityIndicator, Alert, Platform } from "react-native";
+import { useTheme } from "styled-components";
 
 export function SignIn() {
-  const { signInWithGoogle } = useAuth();
+  const { signInWithGoogle, signInWithApple } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const theme = useTheme();
 
   async function handleSignInWithGoogle() {
     try {
-      await signInWithGoogle();
+      setIsLoading(true);
+      return await signInWithGoogle();
     } catch (error) {
       console.log(error);
       Alert.alert("Não foi possível conectar a conta google");
+      setIsLoading(false);
+    }
+  }
+
+  async function handleSignInWithApple() {
+    try {
+      setIsLoading(true);
+      return await signInWithApple();
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Não foi possível conectar a conta Apple");
+      setIsLoading(false);
     }
   }
 
@@ -50,8 +66,21 @@ export function SignIn() {
             title="Entrar com o Google"
             onPress={handleSignInWithGoogle}
           />
-          <SignInSocialButton svg={AppleSvg} title="Entrar com Apple" />
+          {Platform.OS === "ios" && (
+            <SignInSocialButton
+              svg={AppleSvg}
+              title="Entrar com Apple"
+              onPress={handleSignInWithApple}
+            />
+          )}
         </FooterWrapper>
+        {isLoading && (
+          <ActivityIndicator
+            size="large"
+            color={theme.colors.shape}
+            style={{ marginTop: 18 }}
+          />
+        )}
       </Footer>
     </Container>
   );
